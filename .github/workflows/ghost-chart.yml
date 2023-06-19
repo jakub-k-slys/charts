@@ -1,6 +1,4 @@
-
-
-name: Release Charts
+name: Release ghost chart
 on:
   push:
     branches:
@@ -8,15 +6,24 @@ on:
   workflow_dispatch:
 jobs:
   release:
-  runs-on: ubuntu-latest
-  - name: Chart | Push
-    uses: appany/helm-oci-chart-releaser@v0.3.0
-    with:
-      name: my-chart
-      repository: appany
-      tag: 0.1.0
-      path: charts/my-chart # Default charts/{name}
-      registry: ghcr.io
-      registry_username: ${{ secrets.REGISTRY_USERNAME }}
-      registry_password: ${{ secrets.REGISTRY_PASSWORD }}
-      update_dependencies: 'true' # Defaults to false
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Configure Git
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+    - name: Chart | Push
+      uses: appany/helm-oci-chart-releaser@v0.3.0
+      with:
+        name: ghost
+        repository: charts
+        tag: 0.1.0
+        path: charts/ghost
+        registry: ghcr.io
+        registry_username: ${{ github.actor }}
+        registry_password: ${{ secrets.REPO_SCOPED_TOKEN }}
+        update_dependencies: 'true' # Defaults to false
