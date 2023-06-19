@@ -1,0 +1,22 @@
+
+
+name: Release Charts
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  release:
+  runs-on: ubuntu-latest
+  - name: Chart | Push
+    uses: appany/helm-oci-chart-releaser@v0.3.0
+    with:
+      name: my-chart
+      repository: appany
+      tag: 0.1.0
+      path: charts/my-chart # Default charts/{name}
+      registry: ghcr.io
+      registry_username: ${{ secrets.REGISTRY_USERNAME }}
+      registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+      update_dependencies: 'true' # Defaults to false
